@@ -12,40 +12,30 @@ import java.util.prefs.Preferences;
 import static java.lang.System.setErr;
 import static java.util.prefs.Preferences.systemRoot;
 
-public class AdministratorChecker
-{
+public class AdministratorChecker {
     public static final boolean IS_RUNNING_AS_ADMINISTRATOR;
 
-    static
-    {
+    static {
         IS_RUNNING_AS_ADMINISTRATOR = isRunningAsAdministrator();
     }
 
-    private static boolean isRunningAsAdministrator()
-    {
+    private static boolean isRunningAsAdministrator() {
         Preferences preferences = systemRoot();
 
-        synchronized (System.err)
-        {
-            setErr(new PrintStream(new OutputStream()
-            {
+        synchronized (System.err) {
+            setErr(new PrintStream(new OutputStream() {
                 @Override
-                public void write(int b)
-                {
-                }
+                public void write(int b) {}
             }));
 
-            try
-            {
+            try {
                 preferences.put("foo", "bar"); // SecurityException on Windows
                 preferences.remove("foo");
                 preferences.flush(); // BackingStoreException on Linux
                 return true;
-            } catch (Exception exception)
-            {
+            } catch (Exception exception) {
                 return false;
-            } finally
-            {
+            } finally {
                 setErr(System.err);
             }
         }
